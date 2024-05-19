@@ -2,11 +2,20 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load the pre-trained pipeline
-pipeline = joblib.load('lgbm-pipeline.pkl')
-
 # Title of the application
 st.title('Hotel Booking Prediction')
+
+# Load the pre-trained pipeline with error handling
+pipeline_path = 'lgbm-pipeline.pkl'
+try:
+    pipeline = joblib.load(pipeline_path)
+    st.success('Pipeline loaded successfully.')
+except FileNotFoundError:
+    st.error(f"Pipeline file not found: {pipeline_path}")
+    st.stop()
+except Exception as e:
+    st.error(f"An error occurred while loading the pipeline: {e}")
+    st.stop()
 
 # Numerical Features
 total_of_special_requests = st.number_input(
@@ -65,8 +74,10 @@ input_data = pd.DataFrame({
 
 # Button to submit the form and make predictions
 if st.button('Predict'):
-    # Make predictions
-    prediction = pipeline.predict(input_data)
-
-    # Display the prediction
-    st.write('Prediction:', prediction[0])
+    try:
+        # Make predictions
+        prediction = pipeline.predict(input_data)
+        # Display the prediction
+        st.write('Prediction:', prediction[0])
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
