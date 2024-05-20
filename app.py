@@ -7,7 +7,7 @@ import pycountry
 st.title('Hotel Booking Prediction')
 
 # Load the pre-trained pipeline with error handling
-pipeline_path = 'pipeline-hotel-best.pkl'
+pipeline_path = 'lgbm-pipeline.pkl'
 try:
     pipeline = joblib.load(pipeline_path)
     st.success('Pipeline loaded successfully.')
