@@ -7,7 +7,7 @@ import pycountry
 st.title('Hotel Booking Prediction')
 
 # Load the pre-trained pipeline with error handling
-pipeline_path = 'lgbm-pipeline.pkl'
+pipeline_path = 'pipeline-hotel-best.pkl'
 try:
     pipeline = joblib.load(pipeline_path)
     st.success('Pipeline loaded successfully.')
@@ -71,36 +71,6 @@ company = st.number_input(
     min_value=0, value=0,
     help='ID of the company that made the booking (if any)'
 )
-arrival_date_year = st.number_input(
-    'Arrival Date Year',
-    min_value=2000, value=2024,
-    help='Year of the arrival date'
-)
-stays_in_week_nights = st.number_input(
-    'Stays in Week Nights',
-    min_value=0, value=0,
-    help='Number of week nights the guest will stay'
-)
-babies = st.number_input(
-    'Number of Babies',
-    min_value=0, value=0,
-    help='Number of babies in the booking'
-)
-previous_bookings_not_canceled = st.number_input(
-    'Previous Bookings Not Canceled',
-    min_value=0, value=0,
-    help='Number of previous bookings that were not canceled'
-)
-days_in_waiting_list = st.number_input(
-    'Days in Waiting List',
-    min_value=0, value=0,
-    help='Number of days the booking was on the waiting list'
-)
-adr = st.number_input(
-    'Average Daily Rate (ADR)',
-    min_value=0.0, value=0.0,
-    help='Average daily rate for the booking'
-)
 
 # Categorical Features
 hotel = st.selectbox(
@@ -163,12 +133,6 @@ input_data = pd.DataFrame({
     'previous_cancellations': [previous_cancellations],
     'agent': [agent],
     'company': [company],
-    'arrival_date_year': [arrival_date_year],
-    'stays_in_week_nights': [stays_in_week_nights],
-    'babies': [babies],
-    'previous_bookings_not_canceled': [previous_bookings_not_canceled],
-    'days_in_waiting_list': [days_in_waiting_list],
-    'adr': [adr],
     'hotel': [hotel],
     'country': [country],
     'market_segment': [market_segment],
