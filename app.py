@@ -166,6 +166,11 @@ arrival_date_month = st.selectbox(
     options=[f'Month {i}' for i in range(1, 13)],
     help='Month of the arrival date'
 )
+arrival_day = st.number_input(
+    'Arrival Day',
+    min_value=1, max_value=31, value=1,
+    help='Day of the arrival date'
+)
 meal = st.selectbox(
     'Meal',
     options=['BB', 'HB', 'FB', 'SC', 'Undefined'],
@@ -207,7 +212,8 @@ input_data = pd.DataFrame({
     'reserved_room_type': [reserved_room_type],
     'arrival_date_month': [arrival_date_month],
     'meal': [meal],
-    'assigned_room_type': [assigned_room_type]
+    'assigned_room_type': [assigned_room_type],
+    'arrival_day': [arrival_day]
 })
 
 # Button to submit the form and make predictions
