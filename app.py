@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import joblib
 import pycountry
+import shap
+import matplotlib.pyplot as plt
 
 # Title of the application
 st.title('Hotel Booking Prediction')
@@ -228,8 +230,6 @@ if st.button('Predict'):
 
             # Display the prediction
             st.markdown(f'### Prediction: {prediction[0]}')
-
-            # Display the prediction probability
             st.markdown(f'### Prediction Probability:')
             st.write(prediction_proba[0])
 
@@ -251,6 +251,17 @@ if st.button('Predict'):
                     '**There is a high probability that the booking will be unsuccessful. Consider reaching out to the guest for confirmation.**')
             elif prediction[0] == 1 and prediction_proba[0][1] > 0.7:
                 st.markdown('**There is a high probability that the booking will be successful. Ensure that the special requests and other preferences are noted for better customer satisfaction.**')
+
+            # Explain the prediction using SHAP
+            explainer = shap.Explainer(
+                pipeline.named_steps['model'], input_data)
+            shap_values = explainer(input_data)
+
+            # Plot SHAP values
+            st.markdown("### Feature Importance based on SHAP values")
+            fig, ax = plt.subplots()
+            shap.plots.bar(shap_values, show=False)
+            st.pyplot(fig)
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {e}")
