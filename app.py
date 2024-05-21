@@ -224,7 +224,31 @@ if st.button('Predict'):
         try:
             # Make predictions
             prediction = pipeline.predict(input_data)
+            prediction_proba = pipeline.predict_proba(input_data)
+
             # Display the prediction
             st.write('Prediction:', prediction[0])
+
+            # Display the prediction probability
+            st.write('Prediction Probability:', prediction_proba[0])
+
+            # Provide a description of the prediction
+            if prediction[0] == 1:
+                st.write('The model predicts that the booking will be successful.')
+                st.write(
+                    'This means that the guest is likely to show up and use the booking as planned.')
+            else:
+                st.write(
+                    'The model predicts that the booking might not be successful.')
+                st.write(
+                    'This could mean the booking might be canceled or the guest might not show up.')
+
+            # Provide additional context or suggestions based on the prediction
+            if prediction[0] == 0 and prediction_proba[0][0] > 0.7:
+                st.write(
+                    'There is a high probability that the booking will be unsuccessful. Consider reaching out to the guest for confirmation.')
+            elif prediction[0] == 1 and prediction_proba[0][1] > 0.7:
+                st.write('There is a high probability that the booking will be successful. Ensure that the special requests and other preferences are noted for better customer satisfaction.')
+
         except Exception as e:
             st.error(f"An error occurred during prediction: {e}")
