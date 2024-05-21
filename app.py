@@ -151,6 +151,31 @@ reservation_day = st.selectbox(
     options=[f'Day {i}' for i in range(1, 32)],
     help='Day of the reservation'
 )
+arrival_week = st.selectbox(
+    'Arrival Week',
+    options=[f'Week {i}' for i in range(1, 53)],
+    help='Week of the year of the arrival date'
+)
+reserved_room_type = st.selectbox(
+    'Reserved Room Type',
+    options=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'L'],
+    help='Code of the reserved room type'
+)
+arrival_date_month = st.selectbox(
+    'Arrival Date Month',
+    options=[f'Month {i}' for i in range(1, 13)],
+    help='Month of the arrival date'
+)
+meal = st.selectbox(
+    'Meal',
+    options=['BB', 'HB', 'FB', 'SC', 'Undefined'],
+    help='Type of meal booked'
+)
+assigned_room_type = st.selectbox(
+    'Assigned Room Type',
+    options=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'P'],
+    help='Code for the assigned room type'
+)
 
 # Prepare the input data as a DataFrame
 input_data = pd.DataFrame({
@@ -177,7 +202,12 @@ input_data = pd.DataFrame({
     'customer_type': [customer_type],
     'reservation_status': [reservation_status],
     'reservation_month': [reservation_month],
-    'reservation_day': [reservation_day]
+    'reservation_day': [reservation_day],
+    'arrival_week': [arrival_week],
+    'reserved_room_type': [reserved_room_type],
+    'arrival_date_month': [arrival_date_month],
+    'meal': [meal],
+    'assigned_room_type': [assigned_room_type]
 })
 
 # Button to submit the form and make predictions
