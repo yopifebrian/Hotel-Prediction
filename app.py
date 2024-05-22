@@ -224,6 +224,7 @@ if st.button('Predict with Details'):
         st.error("Please enter a valid 3-letter ISO country code.")
     else:
         try:
+<<<<<<< HEAD
             # Transform the input data
             transformed_input_data = pipeline.named_steps['preprocessor'].transform(
                 input_data)
@@ -240,6 +241,11 @@ if st.button('Predict with Details'):
             prediction = pipeline.named_steps['model'].predict(transformed_df)
             prediction_proba = pipeline.named_steps['model'].predict_proba(
                 transformed_df)
+=======
+            # Make predictions
+            prediction = pipeline.predict(input_data)
+            prediction_proba = pipeline.predict_proba(input_data)
+>>>>>>> parent of 8c92ce8 (test the fix)
 
             # Display the prediction
             st.markdown(f'### Prediction: {prediction[0]}')
@@ -265,16 +271,24 @@ if st.button('Predict with Details'):
             elif prediction[0] == 1 and prediction_proba[0][1] > 0.7:
                 st.markdown('**There is a high probability that the booking will be successful. Ensure that the special requests and other preferences are noted for better customer satisfaction.**')
 
-            # Explain the prediction using SHAP with TreeExplainer
+            # Explain the prediction using SHAP
             explainer = shap.TreeExplainer(
                 pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
+<<<<<<< HEAD
             shap_values = explainer.shap_values(transformed_df)
+=======
+            shap_values = explainer.shap_values(input_data)
+>>>>>>> parent of 8c92ce8 (test the fix)
 
             # Plot SHAP values with correct feature names
             st.markdown("### Feature Importance based on SHAP values")
             fig, ax = plt.subplots()
+<<<<<<< HEAD
             shap.summary_plot(shap_values, transformed_df,
                               feature_names=feature_names, show=False)
+=======
+            shap.summary_plot(shap_values, input_data, show=False)
+>>>>>>> parent of 8c92ce8 (test the fix)
             st.pyplot(fig)
 
         except Exception as e:
