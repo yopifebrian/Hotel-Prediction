@@ -253,14 +253,14 @@ if st.button('Predict'):
                 st.markdown('**There is a high probability that the booking will be successful. Ensure that the special requests and other preferences are noted for better customer satisfaction.**')
 
             # Explain the prediction using SHAP
-            explainer = shap.Explainer(
-                pipeline.named_steps['model'], input_data)
-            shap_values = explainer(input_data)
+            explainer = shap.TreeExplainer(
+                pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
+            shap_values = explainer.shap_values(input_data)
 
             # Plot SHAP values
             st.markdown("### Feature Importance based on SHAP values")
             fig, ax = plt.subplots()
-            shap.plots.bar(shap_values, show=False)
+            shap.summary_plot(shap_values, input_data, show=False)
             st.pyplot(fig)
 
         except Exception as e:
