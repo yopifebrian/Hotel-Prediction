@@ -219,7 +219,7 @@ input_data = pd.DataFrame({
 })
 
 # Button to submit the form and make predictions
-if st.button('Predict'):
+if st.button('Predict with Details'):
     if country and not is_valid_country_code(country):
         st.error("Please enter a valid 3-letter ISO country code.")
     else:
@@ -228,11 +228,18 @@ if st.button('Predict'):
             transformed_input_data = pipeline.named_steps['preprocessor'].transform(
                 input_data)
 
+            # Retrieve the feature names after transformation
+            feature_names = pipeline.named_steps['preprocessor'].get_feature_names_out(
+            )
+
+            # Convert the transformed data to a DataFrame with the correct feature names
+            transformed_df = pd.DataFrame(
+                transformed_input_data, columns=feature_names)
+
             # Make predictions
-            prediction = pipeline.named_steps['model'].predict(
-                transformed_input_data)
+            prediction = pipeline.named_steps['model'].predict(transformed_df)
             prediction_proba = pipeline.named_steps['model'].predict_proba(
-                transformed_input_data)
+                transformed_df)
 
             # Display the prediction
             st.markdown(f'### Prediction: {prediction[0]}')
@@ -261,15 +268,13 @@ if st.button('Predict'):
             # Explain the prediction using SHAP with TreeExplainer
             explainer = shap.TreeExplainer(
                 pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
-            shap_values = explainer.shap_values(transformed_input_data)
+            shap_values = explainer.shap_values(transformed_df)
 
-            # Plot SHAP values
+            # Plot SHAP values with correct feature names
             st.markdown("### Feature Importance based on SHAP values")
-            feature_names = pipeline.named_steps['preprocessor'].transformers_[
-                0][2] + pipeline.named_steps['preprocessor'].transformers_[1][2]
             fig, ax = plt.subplots()
-            shap.summary_plot(shap_values, pd.DataFrame(
-                transformed_input_data, columns=feature_names), show=False)
+            shap.summary_plot(shap_values, transformed_df,
+                              feature_names=feature_names, show=False)
             st.pyplot(fig)
 
         except Exception as e:
