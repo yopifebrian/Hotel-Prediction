@@ -219,14 +219,20 @@ input_data = pd.DataFrame({
 })
 
 # Button to submit the form and make predictions
-if st.button('Predict'):
+if st.button('Predict with Details'):
     if country and not is_valid_country_code(country):
         st.error("Please enter a valid 3-letter ISO country code.")
     else:
         try:
+            # Transform the input data
+            transformed_input_data = pipeline.named_steps['preprocessor'].transform(
+                input_data)
+
             # Make predictions
-            prediction = pipeline.predict(input_data)
-            prediction_proba = pipeline.predict_proba(input_data)
+            prediction = pipeline.named_steps['model'].predict(
+                transformed_input_data)
+            prediction_proba = pipeline.named_steps['model'].predict_proba(
+                transformed_input_data)
 
             # Display the prediction
             st.markdown(f'### Prediction: {prediction[0]}')
@@ -252,15 +258,15 @@ if st.button('Predict'):
             elif prediction[0] == 1 and prediction_proba[0][1] > 0.7:
                 st.markdown('**There is a high probability that the booking will be successful. Ensure that the special requests and other preferences are noted for better customer satisfaction.**')
 
-            # Explain the prediction using SHAP
+            # Explain the prediction using SHAP with TreeExplainer
             explainer = shap.TreeExplainer(
                 pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
-            shap_values = explainer.shap_values(input_data)
+            shap_values = explainer.shap_values(transformed_input_data)
 
             # Plot SHAP values
             st.markdown("### Feature Importance based on SHAP values")
             fig, ax = plt.subplots()
-            shap.summary_plot(shap_values, input_data, show=False)
+            shap.summary_plot(shap_values, transformed_input_data, show=False)
             st.pyplot(fig)
 
         except Exception as e:
