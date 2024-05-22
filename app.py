@@ -27,6 +27,27 @@ def is_valid_country_code(code):
     return pycountry.countries.get(alpha_3=code) is not None
 
 
+# File uploader to accept CSV or Excel files
+uploaded_file = st.file_uploader(
+    "Upload CSV or Excel file", type=["csv", "xlsx"])
+
+# Button to predict for the uploaded file
+if uploaded_file is not None:
+    try:
+        # Read the uploaded file into a DataFrame
+        if uploaded_file.name.endswith('.csv'):
+            input_data = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endswith(('.xls', '.xlsx')):
+            input_data = pd.read_excel(uploaded_file)
+
+        # Make predictions for each record
+        predictions = pipeline.predict(input_data)
+
+        # Display predictions
+        st.write(predictions)
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {e}")
+
 # Numerical Features
 total_of_special_requests = st.number_input(
     'Total of Special Requests',
@@ -271,24 +292,3 @@ if st.button('Predict with Details'):
 
         except Exception as e:
             st.error(f"An error occurred during prediction: {e}")
-
-# File uploader to accept CSV or Excel files
-uploaded_file = st.file_uploader(
-    "Upload CSV or Excel file", type=["csv", "xlsx"])
-
-# Button to predict for the uploaded file
-if uploaded_file is not None:
-    try:
-        # Read the uploaded file into a DataFrame
-        if uploaded_file.name.endswith('.csv'):
-            input_data = pd.read_csv(uploaded_file)
-        elif uploaded_file.name.endswith(('.xls', '.xlsx')):
-            input_data = pd.read_excel(uploaded_file)
-
-        # Make predictions for each record
-        predictions = pipeline.predict(input_data)
-
-        # Display predictions
-        st.write(predictions)
-    except Exception as e:
-        st.error(f"An error occurred during prediction: {e}")
