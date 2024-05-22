@@ -265,8 +265,11 @@ if st.button('Predict'):
 
             # Plot SHAP values
             st.markdown("### Feature Importance based on SHAP values")
+            feature_names = pipeline.named_steps['preprocessor'].transformers_[
+                0][2] + pipeline.named_steps['preprocessor'].transformers_[1][2]
             fig, ax = plt.subplots()
-            shap.summary_plot(shap_values, transformed_input_data, show=False)
+            shap.summary_plot(shap_values, pd.DataFrame(
+                transformed_input_data, columns=feature_names), show=False)
             st.pyplot(fig)
 
         except Exception as e:
