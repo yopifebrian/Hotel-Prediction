@@ -219,27 +219,14 @@ input_data = pd.DataFrame({
 })
 
 # Button to submit the form and make predictions
-if st.button('Predict with Details'):
+if st.button('Predict'):
     if country and not is_valid_country_code(country):
         st.error("Please enter a valid 3-letter ISO country code.")
     else:
         try:
-            # Transform the input data
-            transformed_input_data = pipeline.named_steps['preprocessor'].transform(
-                input_data)
-
-            # Retrieve the feature names after transformation
-            feature_names = pipeline.named_steps['preprocessor'].get_feature_names_out(
-            )
-
-            # Convert the transformed data to a DataFrame with the correct feature names
-            transformed_df = pd.DataFrame(
-                transformed_input_data, columns=feature_names)
-
             # Make predictions
-            prediction = pipeline.named_steps['model'].predict(transformed_df)
-            prediction_proba = pipeline.named_steps['model'].predict_proba(
-                transformed_df)
+            prediction = pipeline.predict(input_data)
+            prediction_proba = pipeline.predict_proba(input_data)
 
             # Display the prediction
             st.markdown(f'### Prediction: {prediction[0]}')
@@ -268,21 +255,12 @@ if st.button('Predict with Details'):
             # Explain the prediction using SHAP
             explainer = shap.TreeExplainer(
                 pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
-<< << << < HEAD
-            shap_values = explainer.shap_values(transformed_df)
-== == == =
             shap_values = explainer.shap_values(input_data)
->>>>>> > parent of 8c92ce8(test the fix)
 
-            # Plot SHAP values with correct feature names
+            # Plot SHAP values
             st.markdown("### Feature Importance based on SHAP values")
             fig, ax = plt.subplots()
-<< << << < HEAD
-            shap.summary_plot(shap_values, transformed_df,
-                              feature_names=feature_names, show=False)
-== == == =
             shap.summary_plot(shap_values, input_data, show=False)
->>>>>> > parent of 8c92ce8(test the fix)
             st.pyplot(fig)
 
         except Exception as e:
