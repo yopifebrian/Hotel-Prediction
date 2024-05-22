@@ -263,10 +263,17 @@ if st.button('Predict with Details'):
                 pipeline.named_steps['model'], feature_perturbation="tree_path_dependent")
             shap_values = explainer.shap_values(transformed_input_data)
 
+            # Map transformed data back to original feature names for SHAP plot
+            feature_names = pipeline.named_steps['preprocessor'].transformers_[
+                0][1]['log_transform'].feature_names_in_
+            transformed_df = pd.DataFrame(
+                transformed_input_data, columns=feature_names)
+
             # Plot SHAP values
             st.markdown("### Feature Importance based on SHAP values")
             fig, ax = plt.subplots()
-            shap.summary_plot(shap_values, transformed_input_data, show=False)
+            shap.summary_plot(shap_values, transformed_df,
+                              feature_names=feature_names, show=False)
             st.pyplot(fig)
 
         except Exception as e:
